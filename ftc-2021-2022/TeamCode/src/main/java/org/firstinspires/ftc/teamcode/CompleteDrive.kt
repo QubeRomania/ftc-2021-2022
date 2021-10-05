@@ -26,6 +26,8 @@ class CompleteDrive: OpMode() {
             val power = speed
             val rotPower = rotation
 
+            intake.setIntakePower(-gp2.left_trigger.toDouble() + gp2.right_trigger)
+
             hw.motors.move(direction, power, rotPower)
         }
     }
