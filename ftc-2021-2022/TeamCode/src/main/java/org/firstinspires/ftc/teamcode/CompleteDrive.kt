@@ -22,13 +22,55 @@ class CompleteDrive: OpMode() {
         val gp1 = Gamepad(gamepad1)
         val gp2 = Gamepad(gamepad2)
 
+        var isPlacing = false
+        var isDelivering = false
+
         while(opModeIsActive()){
             val power = speed
             val rotPower = rotation
 
-            intake.setIntakePower(-gp2.left_trigger.toDouble() + gp2.right_trigger)
+            if(gp2.right_stick_y.absoluteValue > 0.1)
+                intake.setIntakePower(gp2.right_stick_y.toDouble())
+            else intake.setIntakePower(-gp1.left_trigger.toDouble() + gp1.right_trigger)
+            outtake.moveSlider((gp2.right_trigger - gp2.left_trigger).toDouble())
+
+            if(gp2.right_bumper) {
+                outtake.openSlider()
+            }
+
+            if(gp2.left_bumper) {
+                outtake.closeSlider()
+            }
+
+            if(gp2.checkToggle(Gamepad.Button.A) && outtake.outtakePosition > 0) {
+                if(!isPlacing) {
+                    isPlacing = true
+                    outtake.releaseServo()
+                }
+                else {
+                    isPlacing = false
+                    outtake.closeServo()
+                    //outtake.closeSlider()
+                }
+            }
+
+            if(gp2.checkToggle(Gamepad.Button.X))
+            {
+                if(!isDelivering){
+                    isDelivering = true
+                    carousel.deliverDuck()
+                }
+                else {
+                    isDelivering = true
+                    carousel.stop()
+                }
+            }
 
             hw.motors.move(direction, power, rotPower)
+
+            telemetry.addData("Outake target", outtake.outtakePosition)
+            outtake.printPosition(telemetry)
+            telemetry.update()
         }
     }
 
