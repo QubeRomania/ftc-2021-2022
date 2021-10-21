@@ -24,6 +24,9 @@ class CompleteDrive: OpMode() {
 
         var isPlacing = false
         var isDelivering = false
+        var isUp = false
+        var isMid = false
+        var isLow = false
 
         while(opModeIsActive()){
             val power = speed
@@ -34,12 +37,16 @@ class CompleteDrive: OpMode() {
             else intake.setIntakePower(-gp1.left_trigger.toDouble() + gp1.right_trigger)
             outtake.moveSlider((gp2.right_trigger - gp2.left_trigger).toDouble())
 
-            if(gp2.right_bumper) {
-                outtake.openSlider()
-            }
+            if(gp2.checkToggle(Gamepad.Button.RIGHT_BUMPER)) {
+                if(!isUp) {
+                    outtake.openSlider()
+                    isUp = true
+                }
+                else{
+                    outtake.closeSlider()
+                    isUp = false
+                }
 
-            if(gp2.left_bumper) {
-                outtake.closeSlider()
             }
 
             if(gp2.checkToggle(Gamepad.Button.A) && outtake.outtakePosition > 0) {
