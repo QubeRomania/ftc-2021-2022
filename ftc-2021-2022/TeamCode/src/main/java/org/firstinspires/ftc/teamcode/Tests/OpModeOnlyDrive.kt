@@ -1,19 +1,32 @@
-package org.firstinspires.ftc.teamcode
+package org.firstinspires.ftc.Tests
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.util.ElapsedTime
 import com.qualcomm.robotcore.util.Range
-import org.firstinspires.ftc.teamcode.hardware.Hardware
+import org.firstinspires.ftc.teamcode.Tests.HardwareOnlyDrive
 import kotlin.math.absoluteValue
 import kotlin.math.sign
 
-abstract class OpMode: LinearOpMode() {
+abstract class OpModeOnlyDrive: LinearOpMode() {
 
     protected val hw by lazy {
-        Hardware(hardwareMap)
+        HardwareOnlyDrive(hardwareMap)
     }
 
     final override fun runOpMode() {
+        hw.stop()
+
+        preInit()
+
+        preInitLoop()
+
+        waitForStart()
+
+        if (!opModeIsActive())
+            return
+
+        hw.run()
+
         hw.stop()
     }
 
@@ -22,7 +35,7 @@ abstract class OpMode: LinearOpMode() {
     open fun preInitLoop() {}
 
     //Runs the op mode.
-    abstract fun Hardware.run()
+    abstract fun HardwareOnlyDrive.run()
 }
 
 fun LinearOpMode.waitMillis(millis: Long) {
