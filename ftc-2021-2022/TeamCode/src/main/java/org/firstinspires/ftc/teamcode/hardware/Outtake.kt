@@ -22,16 +22,16 @@ class Outtake(hwMap: HardwareMap) {
     companion object {
         const val SLIDER_LOW = 1000
         const val SLIDER_MEDIUM = 2000
-        const val SLIDER_HIGH = 6800
+        const val SLIDER_HIGH = 2500
         const val SLIDER_CLOSE = 0
         var SLIDER_START_POSITION = 0
-        const val MULTIPLIER = 58
+        const val MULTIPLIER = 48
 
-        const val servoOpen = 1.0
-        const val servoClose = 0.0
+        const val servoOpen = 0.57
+        const val servoClose = 0.83
     }
 
-    val outtakeSlider = hwMap.dcMotor["outtakeSlider"] ?: throw Exception("Failed to find motor outtakeSlider")
+    val outtakeSlider = hwMap.dcMotor["outtakeSlider"] ?: throw Exception("Fjailed to find motor outtakeSlider")
 
     var outtakePosition: Int = 0
 
@@ -40,12 +40,15 @@ class Outtake(hwMap: HardwareMap) {
     init {
         outtakeSlider.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
         outtakeSlider.direction = DcMotorSimple.Direction.FORWARD
-        outtakeSlider.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
         outtakeSlider.mode = DcMotor.RunMode.RUN_USING_ENCODER
+        outtakeSlider.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+
 
         outtakeSlider.power = 0.0
 
         outtakePosition = 0
+
+        closeServo()
     }
 
     fun openSlider() {

@@ -15,6 +15,19 @@ abstract class OpMode: LinearOpMode() {
 
     final override fun runOpMode() {
         hw.stop()
+
+        preInit()
+
+        preInitLoop()
+
+        waitForStart()
+
+        if (!opModeIsActive())
+            return
+
+        hw.run()
+
+        hw.stop()
     }
 
     open fun preInit() {}

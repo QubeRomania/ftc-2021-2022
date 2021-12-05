@@ -28,13 +28,15 @@ class CompleteDrive: OpMode() {
         var isMid = false
         var isLow = false
 
+        var intakeScale = 0.7
+
         while(opModeIsActive()){
             val power = speed
             val rotPower = rotation
 
             if(gp2.right_stick_y.absoluteValue > 0.1)
-                intake.setIntakePower(gp2.right_stick_y.toDouble())
-            else intake.setIntakePower(-gp1.left_trigger.toDouble() + gp1.right_trigger)
+                intake.setIntakePower(gp2.right_stick_y.toDouble() * intakeScale)
+            else intake.setIntakePower((-gp1.left_trigger.toDouble() + gp1.right_trigger)*intakeScale)
             outtake.moveSlider((gp2.right_trigger - gp2.left_trigger).toDouble())
 
             if(gp2.checkToggle(Gamepad.Button.RIGHT_BUMPER)) {
@@ -44,6 +46,7 @@ class CompleteDrive: OpMode() {
                 }
                 else{
                     outtake.closeSlider()
+                    outtake.closeServo()
                     isUp = false
                 }
 
@@ -61,17 +64,19 @@ class CompleteDrive: OpMode() {
                 }
             }
 
-            if(gp2.checkToggle(Gamepad.Button.X))
+            carousel.moveCarousel(gp2.left_stick_x.toDouble())
+
+            /*if(gp2.checkToggle(Gamepad.Button.X))
             {
                 if(!isDelivering){
                     isDelivering = true
                     carousel.deliverDuck()
                 }
                 else {
-                    isDelivering = true
+                    isDelivering = false
                     carousel.stop()
                 }
-            }
+            }*/
 
             hw.motors.move(direction, power, rotPower)
 
@@ -91,7 +96,7 @@ class CompleteDrive: OpMode() {
         }
 
     /// Rotation around the robot's Z axis.
-    private val rotation: Double
+     private val rotation: Double
         get() = -gamepad1.right_stick_x.toDouble()
 
     /// Translation speed.
