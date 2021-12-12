@@ -25,7 +25,7 @@ class Outtake(hwMap: HardwareMap) {
         const val SLIDER_HIGH = 2500
         const val SLIDER_CLOSE = 0
         var SLIDER_START_POSITION = 0
-        const val MULTIPLIER = 48
+        const val MULTIPLIER = 38
 
         const val servoOpen = 0.57
         const val servoClose = 0.83
