@@ -27,8 +27,11 @@ class CompleteDrive: OpMode() {
         var isUp = false
         var isMid = false
         var isLow = false
+        var isOpenedArm = false
 
         var intakeScale = 0.7
+
+        others.closeServos()
 
         while(opModeIsActive()){
             val power = speed
@@ -66,17 +69,19 @@ class CompleteDrive: OpMode() {
 
             carousel.moveCarousel(gp2.left_stick_x.toDouble())
 
-            /*if(gp2.checkToggle(Gamepad.Button.X))
+            customArm.moveArm(-gp1.left_trigger.toDouble() + gp1.right_trigger)
+
+            if(gp1.checkToggle(Gamepad.Button.RIGHT_BUMPER))
             {
-                if(!isDelivering){
-                    isDelivering = true
-                    carousel.deliverDuck()
+                if(!isOpenedArm){
+                    isOpenedArm = true
+                    customArm.openArm()
                 }
                 else {
-                    isDelivering = false
-                    carousel.stop()
+                    isOpenedArm = false
+                    customArm.closeArm()
                 }
-            }*/
+            }
 
             hw.motors.move(direction, power, rotPower)
 
