@@ -31,7 +31,7 @@ class Outtake(hwMap: HardwareMap) {
         const val servoClose = 0.83
     }
 
-    val outtakeSlider = hwMap.dcMotor["outtakeSlider"] ?: throw Exception("Fjailed to find motor outtakeSlider")
+    val outtakeSlider = hwMap.dcMotor["outtakeSlider"] ?: throw Exception("Failed to find motor outtakeSlider")
 
     var outtakePosition: Int = 0
 

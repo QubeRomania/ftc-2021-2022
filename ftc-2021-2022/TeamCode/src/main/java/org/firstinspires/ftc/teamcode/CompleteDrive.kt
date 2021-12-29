@@ -31,6 +31,8 @@ class CompleteDrive: OpMode() {
 
         var intakeScale = 0.7
 
+        var driveScale = 0.8
+
         others.closeServos()
 
         while(opModeIsActive()){
@@ -83,9 +85,9 @@ class CompleteDrive: OpMode() {
                 }
             }
 
-            hw.motors.move(direction, power, rotPower)
+            hw.motors.move(direction, power*driveScale, rotPower*driveScale)
 
-            telemetry.addData("Outake target", outtake.outtakePosition)
+            telemetry.addData("Outtake target", outtake.outtakePosition)
             outtake.printPosition(telemetry)
             telemetry.update()
         }
