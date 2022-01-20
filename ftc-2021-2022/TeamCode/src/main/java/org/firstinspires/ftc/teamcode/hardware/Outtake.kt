@@ -20,15 +20,15 @@ import kotlin.math.absoluteValue
  */
 class Outtake(hwMap: HardwareMap) {
     companion object {
-        const val SLIDER_LOW = 1000
-        const val SLIDER_MEDIUM = 2000
-        const val SLIDER_HIGH = 2500
+        const val SLIDER_LOW = 100
+        const val SLIDER_MEDIUM = 600
+        const val SLIDER_HIGH = 870
         const val SLIDER_CLOSE = 0
         var SLIDER_START_POSITION = 0
         const val MULTIPLIER = 38
 
-        val servoOpen = 0.57
-        val servoClose = 0.83
+        val servoOpen = 0.55
+        val servoClose = 0.82
     }
 
     val outtakeSlider = hwMap.dcMotor["outtakeSlider"] ?: throw Exception("Failed to find motor outtakeSlider")

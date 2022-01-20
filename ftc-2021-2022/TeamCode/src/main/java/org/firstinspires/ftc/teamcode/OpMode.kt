@@ -18,7 +18,9 @@ abstract class OpMode: LinearOpMode() {
 
         preInit()
 
-        preInitLoop()
+        while(!isStarted && !isStopRequested) {
+            preInitLoop()
+        }
 
         waitForStart()
 

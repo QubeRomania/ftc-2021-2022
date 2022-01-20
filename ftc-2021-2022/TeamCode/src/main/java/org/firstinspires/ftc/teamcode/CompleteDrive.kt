@@ -29,7 +29,7 @@ class CompleteDrive: OpMode() {
         var isLow = false
         var isOpenedArm = false
 
-        var intakeScale = 0.7
+        var intakeScale = 0.8
 
         var driveScale = 0.8
         var slowScale = 0.6
@@ -62,7 +62,7 @@ class CompleteDrive: OpMode() {
             else
                 hw.motors.move(direction, power*driveScale, rotPower*driveScale)
 
-            if(gp2.checkToggle(Gamepad.Button.A) && outtake.outtakePosition > 0) {
+            if(gp2.checkToggle(Gamepad.Button.A) && outtake.outtakePosition > 10) {
                 if(!isPlacing) {
                     isPlacing = true
                     outtake.releaseServo()
@@ -76,13 +76,11 @@ class CompleteDrive: OpMode() {
 
             carousel.moveCarousel(gp2.left_stick_x.toDouble())
 
-            customArm.moveArm(-gp1.left_trigger.toDouble() + gp1.right_trigger)
-
             if(gp1.checkToggle(Gamepad.Button.B))
             {
                 if(!isOpenedArm){
                     isOpenedArm = true
-                    customArm.openArm()
+                    customArm.openArmPickup()
                 }
                 else {
                     isOpenedArm = false
@@ -93,6 +91,8 @@ class CompleteDrive: OpMode() {
             //hw.motors.move(direction, power*driveScale, rotPower*driveScale)
 
             telemetry.addData("Outtake target", outtake.outtakePosition)
+            telemetry.addData("PosPerpendicular",others.currentPosPerpendicular)
+            telemetry.addData("PosParallel",others.currentPosParallel)
             outtake.printPosition(telemetry)
             telemetry.update()
         }
