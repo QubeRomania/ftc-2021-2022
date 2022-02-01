@@ -20,7 +20,7 @@ import kotlin.math.absoluteValue
 
 class Carousel(hwMap: HardwareMap) {
     companion object {
-        const val motorPower = 0.7
+        const val motorPower = 1.0
     }
 
     val carouselMotor = hwMap.dcMotor["carouselMotor"] ?: throw Exception("Failed to find motor carouselMotor")
@@ -30,8 +30,8 @@ class Carousel(hwMap: HardwareMap) {
         carouselMotor.power = 0.0
     }
 
-    fun deliverDuck() {
-        carouselMotor.power = motorPower
+    fun deliverDuck(sign: Int) {
+        carouselMotor.power = sign * motorPower
     }
 
     fun moveCarousel(power: Double) {

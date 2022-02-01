@@ -11,14 +11,14 @@ import org.firstinspires.ftc.teamcode.waitMillis
 
 @Autonomous
 @Config
-class AutoRedLeft : AutoBase() {
+class AutoBlueRight : AutoBase() {
 
-    private val startPose = Pose2d(-36.0, -64.0, Math.toRadians(90.0))
-    private val shippingHub = Pose2d(-50.0,-88.0,Math.toRadians(-130.0))
-    private val prepareDuck = Pose2d(-12.0,-76.0, Math.toRadians(100.0))
-    private val deliverDuck = Pose2d(-12.0,-68.0,Math.toRadians(100.0))
-    private val checkPoint1 = Pose2d(-36.0,-64.0,Math.toRadians(100.0))
-    private val parkingPos = Pose2d(-12.0,-91.0,Math.toRadians(0.0))
+    private val startPose = Pose2d(-36.0, 64.0, Math.toRadians(-90.0))
+    private val shippingHub = Pose2d(-50.0,88.0,Math.toRadians(130.0))
+    private val prepareDuck = Pose2d(-12.0,76.0, Math.toRadians(-60.0))
+    private val deliverDuck = Pose2d(-12.0,68.0,Math.toRadians(-60.0))
+    private val checkPoint1 = Pose2d(-36.0,64.0,Math.toRadians(-100.0))
+    private val parkingPos = Pose2d(-12.0,91.0,Math.toRadians(0.0))
 
     override fun preInit() {
         super.preInit()

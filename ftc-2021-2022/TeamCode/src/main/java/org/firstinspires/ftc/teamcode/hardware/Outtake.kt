@@ -20,12 +20,12 @@ import kotlin.math.absoluteValue
  */
 class Outtake(hwMap: HardwareMap) {
     companion object {
-        const val SLIDER_LOW = 100
+        const val SLIDER_LOW = 320
         const val SLIDER_MEDIUM = 600
         const val SLIDER_HIGH = 870
         const val SLIDER_CLOSE = 0
         var SLIDER_START_POSITION = 0
-        const val MULTIPLIER = 38
+        const val MULTIPLIER = 3
 
         val servoOpen = 0.55
         val servoClose = 0.82
@@ -61,6 +61,20 @@ class Outtake(hwMap: HardwareMap) {
     fun closeSlider() {
 
         outtakePosition = SLIDER_CLOSE
+        outtakeSlider.targetPosition = outtakePosition
+        outtakeSlider.mode = DcMotor.RunMode.RUN_TO_POSITION
+        outtakeSlider.power = 1.0
+    }
+
+    fun openLowSlider() {
+        outtakePosition = SLIDER_LOW
+        outtakeSlider.targetPosition = outtakePosition
+        outtakeSlider.mode = DcMotor.RunMode.RUN_TO_POSITION
+        outtakeSlider.power = 1.0
+    }
+
+    fun openMidSlider() {
+        outtakePosition = SLIDER_MEDIUM
         outtakeSlider.targetPosition = outtakePosition
         outtakeSlider.mode = DcMotor.RunMode.RUN_TO_POSITION
         outtakeSlider.power = 1.0

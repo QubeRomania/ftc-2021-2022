@@ -1,9 +1,7 @@
-package org.firstinspires.ftc.teamcode.Tests
+package org.firstinspires.ftc.teamcode.tests.DriveTest
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import org.firstinspires.ftc.Tests.OpModeOnlyDrive
 import org.firstinspires.ftc.teamcode.Gamepad
-import org.firstinspires.ftc.teamcode.hardware.Hardware
 
 @TeleOp(name = "DriveOnly", group = "Main")
 class DriveOnly: OpModeOnlyDrive() {

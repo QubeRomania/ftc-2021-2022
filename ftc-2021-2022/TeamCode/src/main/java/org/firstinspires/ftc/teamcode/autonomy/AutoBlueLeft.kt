@@ -16,12 +16,13 @@ import org.firstinspires.ftc.teamcode.tests.augmentedDrive.PoseStorage
 
 @Autonomous
 @Config
-class AutoRedRight : AutoBase() {
+class AutoBlueLeft : AutoBase() {
 
-    private val startPose = Pose2d(12.0, -64.0, Math.toRadians(90.0))
-    private val shippingHub = Pose2d(21.0,-84.7, Math.toRadians(-65.0))
-    private val wallPose = Pose2d(9.0,-61.7, Math.toRadians(180.0))
-    private val freightPose = Pose2d(-29.0,-61.7,Math.toRadians(180.0))
+    private val startPose = Pose2d(12.0, 64.0, Math.toRadians(-90.0))
+    private val shippingHub = Pose2d(21.0,81.0, Math.toRadians(65.0))
+    private val wallPose = Pose2d(14.0,59.0, Math.toRadians(-175.0))
+    private val freightPose = Pose2d(-21.0,59.0,Math.toRadians(-175.0))
+
 
 
     override fun preInit() {
@@ -44,21 +45,16 @@ class AutoRedRight : AutoBase() {
                             openSliderSpecificPosition()
                         }
                         .splineTo(Vector2d(shippingHub.x,shippingHub.y),
-                        shippingHub.heading)
-                        .addDisplacementMarker{
-                            hw.outtake.releaseServo()
-                        }
-                        .build()
+                                shippingHub.heading).build()
         )
 
-        waitMillis(250)
-        hw.outtake.closeServo()
+        placeFreight()
 
         cycleFreight(3)
 
         //Parking in storage
         var trajectory2 = drive.trajectoryBuilder(wallPose)
-                .splineTo(Vector2d(freightPose.x+3,freightPose.y),freightPose.heading)
+                .strafeTo(Vector2d(freightPose.x+3,freightPose.y))
                 .build()
 
         var trajectory1 = drive.trajectoryBuilder(drive.poseEstimate)
@@ -66,9 +62,7 @@ class AutoRedRight : AutoBase() {
                     hw.outtake.closeSlider()
                     startIntake()
                 }
-                .lineToLinearHeading(Pose2d(wallPose.x+0.5,wallPose.y,wallPose.heading),
-                        SampleMecanumDrive.getVelocityConstraint(50.0, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(Pose2d(wallPose.x-8,wallPose.y,wallPose.heading))
                 .addDisplacementMarker{
                     drive.followTrajectoryAsync(trajectory2)
                 }
@@ -82,8 +76,8 @@ class AutoRedRight : AutoBase() {
     private fun cycleFreight(n: Int){
         for (i in 1 until n)
         {
-            var trajectory2 = drive.trajectoryBuilder(wallPose)
-                    .splineTo(Vector2d(freightPose.x - i*7.5 +7.5,freightPose.y),freightPose.heading,
+            var trajectory2 = drive.trajectoryBuilder(Pose2d(wallPose.x + 1,wallPose.y-2.0*i,wallPose.heading))
+                    .strafeTo(Vector2d(freightPose.x - i*4.3 +4.3,freightPose.y-2.0),
                             SampleMecanumDrive.getVelocityConstraint(45.0, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                             SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                     .build()
@@ -93,7 +87,7 @@ class AutoRedRight : AutoBase() {
                         hw.outtake.closeSlider()
                         startIntake()
                     }
-                    .lineToLinearHeading(wallPose)
+                    .lineToLinearHeading(Pose2d(wallPose.x + 1,wallPose.y-2.0*i,wallPose.heading))
                     .addDisplacementMarker{
                         drive.followTrajectoryAsync(trajectory2)
                     }
@@ -123,26 +117,26 @@ class AutoRedRight : AutoBase() {
                             .addDisplacementMarker{
                                 reverseIntake()
                             }
-                            .strafeTo(Vector2d(wallPose.x,wallPose.y))
+                            .strafeTo(Vector2d(wallPose.x,wallPose.y-2*i))
                             .addDisplacementMarker{
                                 hw.outtake.openSlider()
                             }
-                            .splineTo(Vector2d(shippingHub.x+1*i-1,shippingHub.y),shippingHub.heading)
+                            .splineTo(Vector2d(shippingHub.x+1*i-1,shippingHub.y-0.5),shippingHub.heading)
                             .addDisplacementMarker{
                                 hw.outtake.releaseServo()
                             }
                             .build()
             )
 
-            waitMillis(250)
+            waitMillis(300)
             hw.outtake.closeServo()
         }
 
         //Cycle freight for last time, changing the pickup position
-        var trajectory2 = drive.trajectoryBuilder(wallPose)
-                .splineTo(Vector2d(freightPose.x+3,freightPose.y),freightPose.heading)
-                .splineToConstantHeading(Vector2d(freightPose.x-7,freightPose.y-15),freightPose.heading,
-                        SampleMecanumDrive.getVelocityConstraint(45.0, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+        var trajectory2 = drive.trajectoryBuilder(Pose2d(wallPose.x,wallPose.y-2*3,wallPose.heading))
+                .strafeTo(Vector2d(freightPose.x+5,freightPose.y-2*3))
+                .splineToConstantHeading(Vector2d(freightPose.x+7,freightPose.y+15),freightPose.heading,
+                        SampleMecanumDrive.getVelocityConstraint(35.0, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build()
 
@@ -152,7 +146,7 @@ class AutoRedRight : AutoBase() {
                     hw.outtake.closeSlider()
                     startIntake()
                 }
-                .lineToLinearHeading(wallPose)
+                .lineToLinearHeading(Pose2d(wallPose.x,wallPose.y-2*3,wallPose.heading))
                 .addDisplacementMarker{
                     drive.followTrajectoryAsync(trajectory2)
                 }
@@ -165,31 +159,29 @@ class AutoRedRight : AutoBase() {
         drive.followTrajectory(
                 drive.trajectoryBuilder(
                         drive.poseEstimate,true)
-                        .addTemporalMarker(1.0) {
-                            reverseIntake()
-                        }
-                        .strafeTo(Vector2d(freightPose.x,freightPose.y))
+                        .strafeTo(Vector2d(freightPose.x,freightPose.y-6.0))
                         .build()
         )
 
         drive.followTrajectory(
                 drive.trajectoryBuilder(
                         drive.poseEstimate,true)
-                        .strafeTo(Vector2d(wallPose.x,wallPose.y))
+                        .addDisplacementMarker{
+                            reverseIntake()
+                        }
+                        .strafeTo(Vector2d(wallPose.x,wallPose.y-2*3))
                         .addDisplacementMarker{
                             hw.outtake.openSlider()
                             //stopIntake()
                         }
-                        .splineTo(Vector2d(shippingHub.x-1,shippingHub.y),shippingHub.heading,
-                                SampleMecanumDrive.getVelocityConstraint(50.0, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                                SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                        .splineTo(Vector2d(shippingHub.x,shippingHub.y),shippingHub.heading)
                         .addDisplacementMarker{
                             hw.outtake.releaseServo()
                         }
                         .build()
         )
 
-        waitMillis(250)
+        waitMillis(350)
         hw.outtake.closeServo()
     }
 

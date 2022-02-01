@@ -51,9 +51,26 @@ class CompleteDrive: OpMode() {
                     isUp = true
                 }
                 else{
-                    outtake.closeSlider()
                     outtake.closeServo()
+                    outtake.closeSlider()
                     isUp = false
+                    isLow = false
+                    isMid = false
+                }
+            }
+
+            if(gp2.checkToggle(Gamepad.Button.LEFT_BUMPER)) {
+                if(!isLow) {
+                    outtake.openLowSlider()
+                    isLow = true
+                    isUp = true
+                    isMid = false
+                }
+                else if(!isMid){
+                    outtake.openMidSlider()
+                    isMid = true
+                    isLow = false
+                    isUp = true
                 }
             }
 
@@ -87,6 +104,9 @@ class CompleteDrive: OpMode() {
                     customArm.closeArm()
                 }
             }
+
+            if(outtake.outtakePosition == 0 && !outtake.outtakeSlider.isBusy)
+                outtake.outtakeSlider.power = 0.0
 
             //hw.motors.move(direction, power*driveScale, rotPower*driveScale)
 

@@ -1,11 +1,7 @@
-package org.firstinspires.ftc.Tests
+package org.firstinspires.ftc.teamcode.tests.DriveTest
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.util.ElapsedTime
-import com.qualcomm.robotcore.util.Range
-import org.firstinspires.ftc.teamcode.Tests.HardwareOnlyDrive
-import kotlin.math.absoluteValue
-import kotlin.math.sign
 
 abstract class OpModeOnlyDrive: LinearOpMode() {
 
