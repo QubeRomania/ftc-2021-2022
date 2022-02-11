@@ -12,110 +12,100 @@ import java.lang.Exception
 
 class CustomArm(hwMap: HardwareMap) {
     companion object {
-        const val ARM_OPENED = 500
-        const val ARM_DEPLOY = 300
-        const val ARM_CLOSED = 0
+        const val servoRotateOpen = 1.0
+        const val servoRotateClose = 0.0
 
-        const val MULTIPLIER_MOTOR = 10
-        const val MULTIPLIER_SERVO = 0.05
+        const val servoSustain1Open = 1.0
+        const val servoSustain1Close = 0.0
 
-        const val servoHelpOpenPickup = 0.0
-        const val servoHelpOpenDeploy = 0.0
-        const val servoHelpClose = 1.0
-
-        const val servoMagnetOpen = 0.0
-        const val servoMagnetClose = 1.0
+        const val servoSustain2Open = 1.0
+        const val servoSustain2Close = 0.0
     }
 
-    val armMotor = hwMap.dcMotor["armMotor"] ?: throw Exception("Failed to find motor armMotor")
-    val clawServo = hwMap.servo["clawServo"] ?: throw Exception("Failed to find servo clawServo")
-    //val servoHelp = hwMap.servo["ServoHelp"] ?: throw Exception("Failed to find servo servoHelp")
+    val continuosServo = hwMap.get(CRServo::class.java, "continousServo") ?: throw Exception("Failed to find servo continousServo")
+    val sustainServo1 = hwMap.servo["sustainServo1"] ?: throw Exception("Failed to find servo sustainServo1")
+    val sustainServo2 = hwMap.servo["sustainServo2"] ?: throw Exception("Failed to find servo sustainServo2")
+    val servoRotate = hwMap.servo["servoRotate"] ?: throw Exception("Failed to find servo servoRotate")
 
-    var armPosition: Int = 0
-    var servoHelpPosition: Double = servoHelpClose
-    var servoMagnetPosition: Double = servoMagnetClose
+    var sustainServo1Position : Double = servoSustain1Close
+    var sustainServo2Position : Double = servoSustain2Close
+    var rotateServoPosition : Double = servoRotateClose
 
     init {
-        armMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
-        armMotor.direction = DcMotorSimple.Direction.FORWARD
-        armMotor.mode = DcMotor.RunMode.RUN_USING_ENCODER
-        armMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-
-        closeServoM()
-        releaseServoM()
+        sustainServo1.position = servoSustain1Close
+        sustainServo2.position = servoSustain2Close
     }
 
-    fun openArmPickup(){
-        armPosition = ARM_OPENED
-        armMotor.targetPosition = armPosition
-        armMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
-        armMotor.power = 1.0
-
-        setServoPositions(servoHelpOpenPickup)
+    fun extendMeasure()
+    {
+        continuosServo.direction = DcMotorSimple.Direction.REVERSE
+        continuosServo.power = 0.7
     }
 
-    fun openArmDeploy(){
-        armPosition = ARM_DEPLOY
-        armMotor.targetPosition = armPosition
-        armMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
-        armMotor.power = 1.0
-
+    fun shrinkMeasure()
+    {
+        continuosServo.direction = DcMotorSimple.Direction.FORWARD
+        continuosServo.power = 0.5
     }
 
-    fun closeArm(){
-        armPosition = ARM_CLOSED
-        armMotor.targetPosition = armPosition
-        armMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
-        armMotor.power = 1.0
+    fun stopMeasure()
+    {
+        continuosServo.power = 0.0
     }
 
-    fun moveArm(direction: Int){
-        if(direction > 0)
-        {
-            armPosition += MULTIPLIER_MOTOR
-            if(armPosition > ARM_OPENED)
-                armPosition = ARM_OPENED
-            armMotor.targetPosition = armPosition
-            armMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
-            armMotor.power = 1.0
+    fun moveUp()
+    {
+        sustainServo1Position+=0.03
+        sustainServo2Position+=0.03
 
-            servoHelpPosition -= MULTIPLIER_SERVO
-            if(servoHelpPosition < servoHelpClose)
-                servoHelpPosition = servoHelpClose
-        }
-        else
-        {
-            armPosition -= MULTIPLIER_MOTOR
-            if(armPosition < ARM_CLOSED)
-                armPosition = ARM_CLOSED
-            armMotor.targetPosition = armPosition
-            armMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
-            armMotor.power = 1.0
+        if(sustainServo1Position > servoSustain1Open)
+            sustainServo1Position = servoSustain1Open
 
-            servoHelpPosition += MULTIPLIER_SERVO
-            if(servoHelpPosition > servoHelpOpenPickup)
-                servoHelpPosition = servoHelpOpenPickup
-        }
+
+        if(sustainServo2Position > servoSustain2Open)
+            sustainServo2Position = servoSustain2Open
+
+
+        sustainServo1.position = sustainServo1Position
+        sustainServo2.position = sustainServo2Position
     }
+
+    fun moveDown()
+    {
+        sustainServo1Position-=0.03
+        sustainServo2Position-=0.03
+
+        if(sustainServo1Position < servoSustain1Close)
+            sustainServo1Position = servoSustain1Close
+
+        if(sustainServo2Position < servoSustain2Close)
+            sustainServo2Position = servoSustain2Close
+
+        sustainServo1.position = sustainServo1Position
+        sustainServo2.position = sustainServo2Position
+    }
+
+    fun rotateLeft()
+    {
+        rotateServoPosition += 0.3
+
+        if(rotateServoPosition > servoRotateOpen)
+            rotateServoPosition = servoRotateOpen
+
+        servoRotate.position = rotateServoPosition
+    }
+
+    fun rotateRight()
+    {
+        rotateServoPosition -= 0.3
+        if(rotateServoPosition < servoRotateClose)
+            rotateServoPosition = servoRotateClose
+
+        servoRotate.position = rotateServoPosition
+    }
+
 
     fun stop(){
-        armMotor.power = 0.0
-    }
-
-    fun releaseServoM(){
-        setServoPositions(servoMagnetOpen)
-    }
-
-    fun closeServoM(){
-        setServoPositions(servoMagnetClose)
-    }
-
-
-    fun closeServoHelp() {
-        setServoPositions(servoHelpClose)
-    }
-
-    fun setServoPositions(pos: Double){
-        clawServo.position = pos
+        continuosServo.power = 0.5
     }
 }

@@ -12,6 +12,8 @@ import org.firstinspires.ftc.teamcode.waitMillis
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.roadrunner.trajectory.Trajectory
+import com.qualcomm.robotcore.hardware.DcMotor
+import org.firstinspires.ftc.teamcode.hardware.Outtake
 import org.firstinspires.ftc.teamcode.tests.augmentedDrive.PoseStorage
 
 @Autonomous
@@ -20,8 +22,8 @@ class AutoRedRight : AutoBase() {
 
     private val startPose = Pose2d(12.0, -64.0, Math.toRadians(90.0))
     private val shippingHub = Pose2d(21.0,-84.7, Math.toRadians(-65.0))
-    private val wallPose = Pose2d(9.0,-61.7, Math.toRadians(180.0))
-    private val freightPose = Pose2d(-29.0,-61.7,Math.toRadians(180.0))
+    private val wallPose = Pose2d(9.0,-62.0, Math.toRadians(180.0))
+    private val freightPose = Pose2d(-29.0,-62.0,Math.toRadians(180.0))
 
 
     override fun preInit() {
@@ -63,7 +65,9 @@ class AutoRedRight : AutoBase() {
 
         var trajectory1 = drive.trajectoryBuilder(drive.poseEstimate)
                 .addDisplacementMarker{
-                    hw.outtake.closeSlider()
+                    hw.outtake.outtakeSlider.targetPosition = -20
+                    hw.outtake.outtakeSlider.mode = DcMotor.RunMode.RUN_TO_POSITION
+                    hw.outtake.outtakeSlider.power = 0.8
                     startIntake()
                 }
                 .lineToLinearHeading(Pose2d(wallPose.x+0.5,wallPose.y,wallPose.heading),
@@ -140,8 +144,8 @@ class AutoRedRight : AutoBase() {
 
         //Cycle freight for last time, changing the pickup position
         var trajectory2 = drive.trajectoryBuilder(wallPose)
-                .splineTo(Vector2d(freightPose.x+3,freightPose.y),freightPose.heading)
-                .splineToConstantHeading(Vector2d(freightPose.x-7,freightPose.y-15),freightPose.heading,
+                .splineTo(Vector2d(freightPose.x-3,freightPose.y),freightPose.heading)
+                .splineToConstantHeading(Vector2d(freightPose.x-8,freightPose.y-15),freightPose.heading,
                         SampleMecanumDrive.getVelocityConstraint(45.0, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build()
@@ -149,7 +153,9 @@ class AutoRedRight : AutoBase() {
         //Using async following for better auto
         var trajectory1 = drive.trajectoryBuilder(drive.poseEstimate)
                 .addDisplacementMarker{
-                    hw.outtake.closeSlider()
+                    hw.outtake.outtakeSlider.targetPosition = -20
+                    hw.outtake.outtakeSlider.mode = DcMotor.RunMode.RUN_TO_POSITION
+                    hw.outtake.outtakeSlider.power = 0.8
                     startIntake()
                 }
                 .lineToLinearHeading(wallPose)
@@ -180,7 +186,7 @@ class AutoRedRight : AutoBase() {
                             hw.outtake.openSlider()
                             //stopIntake()
                         }
-                        .splineTo(Vector2d(shippingHub.x-1,shippingHub.y),shippingHub.heading,
+                        .splineTo(Vector2d(shippingHub.x-1,shippingHub.y-1.0),shippingHub.heading,
                                 SampleMecanumDrive.getVelocityConstraint(50.0, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                                 SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                         .addDisplacementMarker{

@@ -60,8 +60,8 @@ class AutoRedLeft : AutoBase() {
                         .build()
         )
 
-        hw.carousel.deliverDuck(-1)
-        waitMillis(3000)
+        carousel.carouselMotor.power = -0.4
+        waitMillis(2000)
 
         hw.carousel.stop()
 

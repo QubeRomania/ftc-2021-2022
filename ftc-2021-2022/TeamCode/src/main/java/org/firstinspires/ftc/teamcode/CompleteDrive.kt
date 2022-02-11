@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode
 import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.util.ElapsedTime
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import org.firstinspires.ftc.teamcode.hardware.Hardware
 import java.lang.Math.atan2
 import kotlin.math.absoluteValue
@@ -42,7 +43,6 @@ class CompleteDrive: OpMode() {
 
             if(gp2.right_stick_y.absoluteValue > 0.1)
                 intake.setIntakePower(gp2.right_stick_y.toDouble() * intakeScale)
-            else intake.setIntakePower((-gp1.left_trigger.toDouble() + gp1.right_trigger)*intakeScale)
             outtake.moveSlider((gp2.right_trigger - gp2.left_trigger).toDouble())
 
             if(gp2.checkToggle(Gamepad.Button.RIGHT_BUMPER)) {
@@ -79,6 +79,16 @@ class CompleteDrive: OpMode() {
             else
                 hw.motors.move(direction, power*driveScale, rotPower*driveScale)
 
+            if(gp2.checkToggle(Gamepad.Button.X))
+            {
+                carousel.carouselMotor.power = -0.3
+                waitMillis(900)
+                carousel.carouselMotor.power = -0.5
+                waitMillis(300)
+                carousel.carouselMotor.power = -0.7
+                waitMillis(300)
+            }
+
             if(gp2.checkToggle(Gamepad.Button.A) && outtake.outtakePosition > 10) {
                 if(!isPlacing) {
                     isPlacing = true
@@ -93,26 +103,35 @@ class CompleteDrive: OpMode() {
 
             carousel.moveCarousel(gp2.left_stick_x.toDouble())
 
-            if(gp1.checkToggle(Gamepad.Button.B))
+            if(gp1.right_trigger > 0.1)
+                customArm.extendMeasure()
+            else
             {
-                if(!isOpenedArm){
-                    isOpenedArm = true
-                    customArm.openArmPickup()
-                }
-                else {
-                    isOpenedArm = false
-                    customArm.closeArm()
-                }
+                if(gp1.left_trigger > 0.1)
+                    customArm.shrinkMeasure()
+                else
+                    customArm.stopMeasure()
             }
 
-            if(outtake.outtakePosition == 0 && !outtake.outtakeSlider.isBusy)
-                outtake.outtakeSlider.power = 0.0
+
+            if(gp1.checkToggle(Gamepad.Button.DPAD_UP))
+                customArm.moveUp()
+            if(gp1.checkToggle(Gamepad.Button.DPAD_DOWN))
+                customArm.moveDown()
+
+            if(gp1.checkToggle(Gamepad.Button.DPAD_RIGHT))
+                customArm.rotateRight()
+            if(gp1.checkToggle(Gamepad.Button.DPAD_LEFT))
+                customArm.rotateLeft()
 
             //hw.motors.move(direction, power*driveScale, rotPower*driveScale)
 
             telemetry.addData("Outtake target", outtake.outtakePosition)
+            telemetry.addData("Outtake power", outtake.outtakeSlider.power)
             telemetry.addData("PosPerpendicular",others.currentPosPerpendicular)
             telemetry.addData("PosParallel",others.currentPosParallel)
+            telemetry.addData("Has Freight",outtake.hasFreight())
+            telemetry.addData("Position sensor", outtake.distanceSensor.getDistance(DistanceUnit.CM))
             outtake.printPosition(telemetry)
             telemetry.update()
         }

@@ -44,12 +44,11 @@ abstract class AutoBase : org.firstinspires.ftc.teamcode.OpMode() {
 
     fun openSliderSpecificPosition()
     {
-        if(position == TeamElementDetection.FreightFrenzyPosition.LEFT)
-            hw.outtake.openSlider()
-        else if(position == TeamElementDetection.FreightFrenzyPosition.RIGHT)
-            hw.outtake.openLowSlider()
-        else if(position == TeamElementDetection.FreightFrenzyPosition.CENTER)
-            hw.outtake.openMidSlider()
+        when (position) {
+            TeamElementDetection.FreightFrenzyPosition.RIGHT -> hw.outtake.openSlider()
+            TeamElementDetection.FreightFrenzyPosition.LEFT -> hw.outtake.openLowSlider()
+            TeamElementDetection.FreightFrenzyPosition.CENTER -> hw.outtake.openMidSlider()
+        }
     }
 
     fun reverseIntake() {

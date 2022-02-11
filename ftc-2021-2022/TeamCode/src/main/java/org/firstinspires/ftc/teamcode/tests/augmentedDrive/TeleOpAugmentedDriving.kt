@@ -132,17 +132,6 @@ class TeleOpAugmentedDriving: OpMode() {
 
             carousel.moveCarousel(gp2.left_stick_x.toDouble())
 
-            if(gp1.checkToggle(Gamepad.Button.B))
-            {
-                if(!isOpenedArm){
-                    isOpenedArm = true
-                    customArm.openArmPickup()
-                }
-                else {
-                    isOpenedArm = false
-                    customArm.closeArm()
-                }
-            }
 
             //hw.motors.move(direction, power*driveScale, rotPower*driveScale)
 

@@ -12,7 +12,7 @@ import java.lang.Exception
 
 class Others(hwMap: HardwareMap) {
     companion object {
-        const val servoOpenParallelOdo = 0.55
+        const val servoOpenParallelOdo = 0.57
         const val servoCloseParallelOdo = 0.16
 
         const val servoOpenPerpendicularOdo = 0.6
