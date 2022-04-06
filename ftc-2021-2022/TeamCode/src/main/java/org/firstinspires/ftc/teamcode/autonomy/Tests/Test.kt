@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.tests.augmentedDrive.PoseStorage
 
 @Autonomous
 @Config
-class ShippingWallPathTest : AutoBase() {
+class Test : AutoBase() {
 
     private val startPose = Pose2d(12.0, -64.0, Math.toRadians(90.0))
     private val shippingHub = Pose2d(21.0,-85.7, Math.toRadians(-65.0))
@@ -78,9 +78,9 @@ class ShippingWallPathTest : AutoBase() {
                             reverseIntake()
                     }
                     .addTemporalMarker(0.5){
-                            reverseIntake()
+                        reverseIntake()
                     }
-                    .lineTo(Vector2d(wallPose.x, wallPose.y-i*2.6+2.6))
+                    .splineToConstantHeading(Vector2d(wallPose.x, wallPose.y-i*3.0+3.0),wallPose.heading)
                     .addDisplacementMarker{
                         reverseIntake()
                     }
@@ -89,9 +89,9 @@ class ShippingWallPathTest : AutoBase() {
                         hw.outtake.openSlider()
                     }
                     .splineToConstantHeading(Vector2d(15.0, -70.0), 0.0)
-                    .splineTo(Vector2d(shippingHub.x-1*i+1, shippingHub.y-i*2.6), shippingHub.heading,
+                    .splineTo(Vector2d(shippingHub.x+1*i-1, shippingHub.y-i*3.0), shippingHub.heading,
                             SampleMecanumDrive.getVelocityConstraint(60.0, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                            SampleMecanumDrive.getAccelerationConstraint(35.0)
+                            SampleMecanumDrive.getAccelerationConstraint(40.0)
                     )
                     .addDisplacementMarker {
                         hw.outtake.releaseServo()
@@ -107,9 +107,10 @@ class ShippingWallPathTest : AutoBase() {
                     .addTemporalMarker(0.15) {
                         hw.outtake.closeServo()
                     }
-                    .splineToSplineHeading(Pose2d(wallPose.x, wallPose.y-i*2.6+2.6, wallPose.heading), wallPose.heading)
+                    .splineTo(Vector2d(16.0,-72.0),wallPose.heading)
+                    .splineToConstantHeading(Vector2d(wallPose.x, wallPose.y-i*3.0+3.0), wallPose.heading)
                     //.splineTo(Vector2d(wallPose.x,wallPose.y),wallPose.heading)
-                    .lineTo(Vector2d(freightPose.x-4.5*i+4.0, freightPose.y-i*2.6+2.6))
+                    .splineToConstantHeading(Vector2d(freightPose.x-4.5*i+4.0, freightPose.y-i*2.6+2.6),freightPose.heading)
                     .addDisplacementMarker{
                         drive.update()
                         drive.followTrajectoryAsync(trajectory2)
@@ -234,7 +235,7 @@ class ShippingWallPathTest : AutoBase() {
                     hw.outtake.closeServo()
                     hw.customArm.moveSpecifiedPosition(0.35,0.2)
                 }
-                .splineToSplineHeading(Pose2d(wallPose.x, wallPose.y-5*2.6+2.6, wallPose.heading), wallPose.heading)
+                .splineToSplineHeading(Pose2d(wallPose.x, wallPose.y-5*3.0+3.0, wallPose.heading), wallPose.heading)
                 //.splineTo(Vector2d(wallPose.x,wallPose.y),wallPose.heading)
                 .lineTo(Vector2d(freightPose.x, freightPose.y-5*2.6+2.6),
                         SampleMecanumDrive.getVelocityConstraint(70.0, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),

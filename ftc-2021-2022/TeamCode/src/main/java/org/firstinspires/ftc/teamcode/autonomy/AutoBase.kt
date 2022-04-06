@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.autonomy
 
 import com.acmerobotics.dashboard.config.Config
+import com.qualcomm.robotcore.hardware.DcMotor
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive
+import org.firstinspires.ftc.teamcode.hardware.Outtake
 import org.firstinspires.ftc.teamcode.waitMillis
 import org.openftc.easyopencv.OpenCvCamera
 import org.openftc.easyopencv.OpenCvCameraFactory
@@ -45,9 +47,9 @@ abstract class AutoBase : org.firstinspires.ftc.teamcode.OpMode() {
     fun openSliderSpecificPosition()
     {
         when (position) {
-            TeamElementDetection.FreightFrenzyPosition.RIGHT -> hw.outtake.openSlider()
-            TeamElementDetection.FreightFrenzyPosition.LEFT -> hw.outtake.openLowSlider()
-            TeamElementDetection.FreightFrenzyPosition.CENTER -> hw.outtake.openMidSlider()
+            IgnitePipeline.FreightFrenzyPosition.RIGHT -> hw.outtake.openSlider()
+            IgnitePipeline.FreightFrenzyPosition.LEFT -> hw.outtake.openLowSlider()
+            IgnitePipeline.FreightFrenzyPosition.CENTER -> hw.outtake.openMidSlider()
         }
     }
 
@@ -57,8 +59,22 @@ abstract class AutoBase : org.firstinspires.ftc.teamcode.OpMode() {
 
     fun placeFreight() {
         hw.outtake.releaseServo()
+
         waitMillis(600)
         hw.outtake.closeServo()
+    }
+
+    fun placeDuck() {
+        hw.outtake.outtakeServo.position = 0.55
+        hw.outtake.outtakeSlider.targetPosition = 820
+        hw.outtake.outtakeSlider.mode = DcMotor.RunMode.RUN_TO_POSITION
+        hw.outtake.outtakeSlider.power = Outtake.OUTTAKE_POWER
+        waitMillis(600)
+        hw.outtake.closeServo()
+        hw.outtake.outtakeSlider.targetPosition = 880
+        hw.outtake.outtakeSlider.mode = DcMotor.RunMode.RUN_TO_POSITION
+        hw.outtake.outtakeSlider.power = Outtake.OUTTAKE_POWER
+        sleep(500)
     }
 
     /**
@@ -71,6 +87,6 @@ abstract class AutoBase : org.firstinspires.ftc.teamcode.OpMode() {
         OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName::class.java, "Webcam 1"), cameraMonitorViewId)
     }
 
-    var pipeline = TeamElementDetection(telemetry)
+    var pipeline = IgnitePipeline(telemetry)
     var position = pipeline.analysis
 }

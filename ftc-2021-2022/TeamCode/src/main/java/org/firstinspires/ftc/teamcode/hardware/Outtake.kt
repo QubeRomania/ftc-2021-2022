@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.hardware
 
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor
+import com.qualcomm.hardware.rev.RevTouchSensor
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
@@ -32,7 +33,7 @@ class Outtake(hwMap: HardwareMap) {
 
         const val OUTTAKE_POWER = 0.8
 
-        val servoOpen = 0.55
+        val servoOpen = 0.59
         val servoClose = 0.82
 
         val necessaryDistance = 8.5
@@ -41,6 +42,7 @@ class Outtake(hwMap: HardwareMap) {
     val outtakeSlider = hwMap.dcMotor["outtakeSlider"] ?: throw Exception("Failed to find motor outtakeSlider")
 
     val distanceSensor = hwMap.get(Rev2mDistanceSensor::class.java, "distanceSensor") ?: throw Exception("Failed to find Rev2mDistanceSensor distanceSensor")
+    val touchSensor = hwMap.get(RevTouchSensor::class.java,"touchSensor") ?: throw Exception("Failed to find RevTouchSensor touchSensor")
 
     var outtakePosition: Int = 0
 
@@ -67,8 +69,29 @@ class Outtake(hwMap: HardwareMap) {
         outtakeSlider.power = OUTTAKE_POWER
     }
 
-    fun closeSlider() {
+    fun closeSliderWithSensor() {
 
+        outtakePosition = SLIDER_CLOSE
+        outtakeSlider.targetPosition = outtakePosition
+        outtakeSlider.mode = DcMotor.RunMode.RUN_TO_POSITION
+        outtakeSlider.power = OUTTAKE_POWER
+
+        while (!touchSensor.isPressed)
+        {
+            outtakePosition -= 10
+            outtakeSlider.targetPosition = outtakePosition
+            outtakeSlider.mode = DcMotor.RunMode.RUN_TO_POSITION
+            outtakeSlider.power = OUTTAKE_POWER
+        }
+
+        outtakeSlider.power = 0.0
+
+        outtakePosition = 0
+
+        outtakeSlider.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+    }
+
+    fun closeSlider() {
         outtakePosition = SLIDER_CLOSE
         outtakeSlider.targetPosition = outtakePosition
         outtakeSlider.mode = DcMotor.RunMode.RUN_TO_POSITION

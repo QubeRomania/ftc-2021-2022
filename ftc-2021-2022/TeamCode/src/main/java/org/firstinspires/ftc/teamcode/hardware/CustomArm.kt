@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.hardware
 
+import com.qualcomm.hardware.rev.RevTouchSensor
 import com.qualcomm.robotcore.hardware.*
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import java.lang.Exception
@@ -12,100 +13,131 @@ import java.lang.Exception
 
 class CustomArm(hwMap: HardwareMap) {
     companion object {
-        const val servoRotateOpen = 1.0
-        const val servoRotateClose = 0.0
+        const val servoYOpen = 1.0
+        const val servoYClose = 0.0
 
-        const val servoSustain1Open = 1.0
-        const val servoSustain1Close = 0.0
+        const val servoZOpen = 1.0
+        const val servoZClose = 0.3
 
-        const val servoSustain2Open = 1.0
-        const val servoSustain2Close = 0.0
+        const val servoYInit = 0.73
+        const val servoZInit = 0.31
+
+        const val servoYOut = 0.69
+        const val servoZOut = 0.54
+
+        const val servoYIn = 0.75
+        const val servoZIn = 0.41
+
+        const val servoYD = 0.6
+        const val servoZD = 0.45
+
+        const val modifier = 0.005
+
     }
 
-    val continuosServo = hwMap.get(CRServo::class.java, "continousServo") ?: throw Exception("Failed to find servo continousServo")
-    val sustainServo1 = hwMap.servo["sustainServo1"] ?: throw Exception("Failed to find servo sustainServo1")
-    val sustainServo2 = hwMap.servo["sustainServo2"] ?: throw Exception("Failed to find servo sustainServo2")
-    val servoRotate = hwMap.servo["servoRotate"] ?: throw Exception("Failed to find servo servoRotate")
+    var currentPosition = 0.0
 
-    var sustainServo1Position : Double = servoSustain1Close
-    var sustainServo2Position : Double = servoSustain2Close
-    var rotateServoPosition : Double = servoRotateClose
+    val servoY = hwMap.servo["servoY"] ?: throw Exception("Failed to find servoY")
+    val servoZ = hwMap.servo["servoZ"] ?: throw Exception("Failed to find servoZ")
+    val continousServo = hwMap.get(CRServo::class.java,"continousServo") ?: throw Exception("Failed to find CRServo continousServo")
+
+    var servoYPosition : Double = servoYClose
+    var servoZPosition : Double = servoZClose
 
     init {
-        sustainServo1.position = servoSustain1Close
-        sustainServo2.position = servoSustain2Close
+        continousServo.direction = DcMotorSimple.Direction.REVERSE
+        servoY.position = servoYInit
+        servoYPosition = servoYInit
+        servoZPosition = servoYInit
+        servoZ.position = servoZInit
     }
 
     fun extendMeasure()
     {
-        continuosServo.direction = DcMotorSimple.Direction.REVERSE
-        continuosServo.power = 0.7
+        continousServo.power = -1.0
     }
 
     fun shrinkMeasure()
     {
-        continuosServo.direction = DcMotorSimple.Direction.FORWARD
-        continuosServo.power = 0.5
+        continousServo.power = 1.0
     }
 
     fun stopMeasure()
     {
-        continuosServo.power = 0.0
+        continousServo.power = 0.0
     }
 
     fun moveUp()
     {
-        sustainServo1Position+=0.03
-        sustainServo2Position+=0.03
+        servoYPosition += modifier
 
-        if(sustainServo1Position > servoSustain1Open)
-            sustainServo1Position = servoSustain1Open
+        if(servoYPosition > servoYOpen)
+            servoYPosition = servoYOpen
 
-
-        if(sustainServo2Position > servoSustain2Open)
-            sustainServo2Position = servoSustain2Open
-
-
-        sustainServo1.position = sustainServo1Position
-        sustainServo2.position = sustainServo2Position
+        servoY.position = servoYPosition
     }
 
     fun moveDown()
     {
-        sustainServo1Position-=0.03
-        sustainServo2Position-=0.03
+        servoYPosition -= modifier
 
-        if(sustainServo1Position < servoSustain1Close)
-            sustainServo1Position = servoSustain1Close
+        if(servoYPosition < servoYClose)
+            servoYPosition = servoYClose
 
-        if(sustainServo2Position < servoSustain2Close)
-            sustainServo2Position = servoSustain2Close
-
-        sustainServo1.position = sustainServo1Position
-        sustainServo2.position = sustainServo2Position
-    }
-
-    fun rotateLeft()
-    {
-        rotateServoPosition += 0.3
-
-        if(rotateServoPosition > servoRotateOpen)
-            rotateServoPosition = servoRotateOpen
-
-        servoRotate.position = rotateServoPosition
+        servoY.position = servoYPosition
     }
 
     fun rotateRight()
     {
-        rotateServoPosition -= 0.3
-        if(rotateServoPosition < servoRotateClose)
-            rotateServoPosition = servoRotateClose
+        servoZPosition += modifier
 
-        servoRotate.position = rotateServoPosition
+        if(servoZPosition > servoZOpen)
+            servoZPosition = servoZOpen
+
+        servoZ.position = servoZPosition
     }
 
+    fun rotateLeft()
+    {
+        servoZPosition -= modifier
+
+        if(servoZPosition < servoZClose)
+            servoZPosition = servoZClose
+
+        servoZ.position = servoZPosition
+    }
+
+    fun moveIn()
+    {
+        servoY.position = servoYIn
+        servoYPosition = servoYIn
+        servoZ.position = servoZIn
+        servoZPosition = servoZIn
+    }
+
+    fun moveOut()
+    {
+        servoY.position = servoYOut
+        servoYPosition = servoYOut
+        servoZ.position = servoZOut
+        servoZPosition = servoZOut
+    }
+
+    fun moveDeliver()
+    {
+        servoY.position = servoYD
+        servoYPosition = servoYD
+        servoZ.position = servoZD
+        servoZPosition = servoZD
+    }
+
+    fun moveSpecifiedPosition(y: Double, z: Double)
+    {
+        servoY.position = y
+        servoZ.position = z
+    }
 
     fun stop(){
-        continuosServo.power = 0.5
+        stopMeasure()
     }
 }

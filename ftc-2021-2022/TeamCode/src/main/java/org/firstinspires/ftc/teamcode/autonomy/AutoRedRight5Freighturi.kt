@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.tests.augmentedDrive.PoseStorage
 
 @Autonomous
 @Config
-class AutoRedRightNew : AutoBase() {
+class AutoRedRight5Freighturi : AutoBase() {
 
     private val startPose = Pose2d(12.0, -64.0, Math.toRadians(90.0))
     private val shippingHub = Pose2d(21.0,-85.7, Math.toRadians(-65.0))
@@ -56,7 +56,7 @@ class AutoRedRightNew : AutoBase() {
         waitMillis(250)
         hw.outtake.closeServo()
 
-        cycleFreight(3)
+        cycleFreight(4)
 
         //Parking in storage
         var trajectory1 = drive.trajectoryBuilder(drive.poseEstimate)
@@ -123,7 +123,8 @@ class AutoRedRightNew : AutoBase() {
                     .addTemporalMarker(0.15){
                         hw.outtake.closeServo()
                     }
-                    .splineTo(Vector2d(wallPose.x,wallPose.y),wallPose.heading)
+                    .splineToSplineHeading(wallPose,wallPose.heading)
+                    //.splineTo(Vector2d(wallPose.x,wallPose.y),wallPose.heading)
                     .lineTo(Vector2d(freightPose.x - i*2.4 + 2.4,freightPose.y))
                     //.splineToLinearHeading(wallPose,wallPose.heading)
                     .build()

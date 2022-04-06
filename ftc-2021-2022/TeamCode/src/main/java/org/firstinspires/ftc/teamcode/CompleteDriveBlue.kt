@@ -9,8 +9,8 @@ import org.firstinspires.ftc.teamcode.hardware.Hardware
 import java.lang.Math.atan2
 import kotlin.math.absoluteValue
 
-@TeleOp(name = "CompleteDrive", group = "Main")
-class CompleteDrive: OpMode() {
+@TeleOp(name = "CompleteDriveBlue", group = "Main")
+class CompleteDriveBlue: OpMode() {
 
     override fun preInit() {
         hw.customArm.servoY.position = 0.38
@@ -157,7 +157,7 @@ class CompleteDrive: OpMode() {
             {
                 if(!isDelivering)
                 {
-                    carousel.moveCarousel(-0.8)
+                    carousel.moveCarousel(0.9)
                     isDelivering = true
                 }
                 else
@@ -193,7 +193,7 @@ class CompleteDrive: OpMode() {
         }
 
     /// Rotation around the robot's Z axis.
-     private val rotation: Double
+    private val rotation: Double
         get() = -gamepad1.right_stick_x.toDouble()
 
     /// Translation speed.
